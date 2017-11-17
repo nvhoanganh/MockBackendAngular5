@@ -1,8 +1,11 @@
+import { MockHttpBackend, useMockBackend } from './apiservice-mock';
+import { environment } from './../environments/environment';
+import { HttpClient, HttpClientModule, HttpRequest, HttpSentEvent,
+  HttpHandler, HttpBackend, HttpXhrBackend, HttpResponse } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-
-
+import { NgModule, InjectionToken } from '@angular/core';
 import { AppComponent } from './app.component';
+import { ApiService, API_BASE_URL } from './apiservice';
 
 
 @NgModule({
@@ -10,9 +13,22 @@ import { AppComponent } from './app.component';
     AppComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    ApiService,
+    { provide: API_BASE_URL, useValue: environment.api_url},
+    // code required to switch between mocked and real backend
+    MockHttpBackend,
+    {
+      provide: HttpBackend,
+      deps: [HttpXhrBackend, MockHttpBackend],
+      useFactory: useMockBackend
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+
