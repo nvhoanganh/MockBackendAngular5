@@ -6,5 +6,5 @@
 export const environment = {
   production: true,
   api_url: 'http://localhost:33181',
-  use_mocked_backend: false
+  use_mocked_backend: true
 };
